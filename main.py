@@ -43,14 +43,15 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
                 )
                 """
             )
-            connection.executemany(
-                """
-                INSERT INTO books (barcode, title, price, currency)
-                VALUES (%s, %s, %s, %s)
-                ON CONFLICT (barcode) DO NOTHING
-                """,
-                SEED_BOOKS,
-            )
+            with connection.cursor() as cursor:
+                cursor.executemany(
+                    """
+                    INSERT INTO books (barcode, title, price, currency)
+                    VALUES (%s, %s, %s, %s)
+                    ON CONFLICT (barcode) DO NOTHING
+                    """,
+                    SEED_BOOKS,
+                )
         app.state.pool = pool
         yield
     finally:
