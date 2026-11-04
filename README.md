@@ -1,44 +1,43 @@
 # Buchscanner
 
-Eine kleine, mobilfreundliche Web-App: Buch-ISBN per Handykamera scannen oder
-manuell eingeben und Titel sowie Preis aus PostgreSQL anzeigen lassen.
+Eine mobilfreundliche FastAPI-Web-App zum Scannen und Nachschlagen von
+Buch-ISBNs. Titel, Preise und Barcodes werden in PostgreSQL gespeichert.
 
 ## Lokal starten
 
-Voraussetzungen: Node.js 20+ und PostgreSQL.
+Voraussetzungen: Python 3.11+ und PostgreSQL.
 
-1. Abhängigkeiten installieren: `npm install`
-2. `DATABASE_URL` auf die PostgreSQL-Verbindung setzen, zum Beispiel
-   `postgresql://postgres:passwort@localhost:5432/buchscanner`
-3. Frontend starten und bauen: `npm run build`
-4. Server starten: `npm start`
-5. Die App unter `http://localhost:3000` öffnen.
+In PowerShell im Projektordner:
 
-Beim ersten Start wird die Tabelle `books` erstellt und mit drei Beispielen
-befüllt. Vorhandene Datensätze werden nicht überschrieben. Bücher und Preise
-werden ausschliesslich in PostgreSQL gespeichert.
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+$env:DATABASE_URL = "postgresql://postgres:passwort@localhost:5432/buchscanner"
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
 
-Im Katalog zeigt die App zu jedem Buch auch einen scannbaren EAN-13-Barcode.
-Zum Testen öffnest du die Seite auf einem Computer und scannst den angezeigten
-Barcode mit dem Handy. Ein Handy kann nicht gleichzeitig seinen eigenen
-Bildschirm mit der eigenen Kamera scannen.
+Danach die App unter `http://localhost:8000` öffnen. Beim ersten Start legt die
+App die Tabelle `books` an und fügt drei Beispieldatensätze ein. Bestehende
+Datensätze werden nicht überschrieben.
 
-Für den Kamerazugriff auf dem Handy muss die App über HTTPS geöffnet werden.
-Auf Railway wird HTTPS automatisch bereitgestellt. Zum lokalen Testen auf einem
-Handy braucht es ebenfalls eine HTTPS-Adresse; andernfalls kann der Barcode
-manuell eingegeben werden.
+Die Scan-Bibliothek und die Bibliothek für die sichtbaren EAN-13-Barcodes werden
+im Browser von jsDelivr geladen; dafür benötigt der Browser eine Internetverbindung.
+Für Kamerazugriff auf dem Handy muss die App über HTTPS geöffnet werden. Für
+einen einfachen Test kannst du die Seite auf dem Computer anzeigen und die
+Barcodes mit dem Handy scannen.
 
 ## Auf Railway deployen
 
-1. Dieses Projekt in ein Git-Repository pushen und das Repository in Railway
-   als neues Projekt deployen.
+1. Das Projekt in ein Git-Repository pushen und in Railway deployen.
 2. Im Railway-Projekt einen PostgreSQL-Service hinzufügen.
-3. Im Variablen-Bereich des App-Services `DATABASE_URL` auf die Variable
-   `${{Postgres.DATABASE_URL}}` setzen (den Namen `Postgres` an den Namen des
-   Datenbank-Services anpassen).
-4. Railway verwendet `npm start`; der Build läuft über `npm run build`.
-5. Die öffentliche HTTPS-Domain des App-Services auf dem Handy öffnen und den
-   Kamerazugriff erlauben.
+3. Im Variablen-Bereich des App-Services `DATABASE_URL` auf
+   `${{Postgres.DATABASE_URL}}` setzen. `Postgres` gegebenenfalls durch den Namen
+   deines Datenbank-Services ersetzen.
+4. Railway verwendet den Startbefehl aus `Procfile`; die Python-Abhängigkeiten
+   werden anhand von `requirements.txt` installiert.
+5. Die öffentliche HTTPS-Domain auf dem Handy öffnen und den Kamerazugriff
+   erlauben.
 
-Die drei Beispieldatensätze sind ISBNs mit CHF-Preisen und können nach dem
+Die drei Beispieldatensätze sind ISBNs mit CHF-Preisen. Sie können nach dem
 ersten Start direkt in der PostgreSQL-Tabelle `books` angepasst werden.

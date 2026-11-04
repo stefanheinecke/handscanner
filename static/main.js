@@ -1,6 +1,5 @@
-import { BrowserMultiFormatReader } from "@zxing/browser";
-import JsBarcode from "jsbarcode";
-import "./style.css";
+import { BrowserMultiFormatReader } from "https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/+esm";
+import JsBarcode from "https://cdn.jsdelivr.net/npm/jsbarcode@3.12.3/+esm";
 
 const camera = document.querySelector("#camera");
 const cameraPlaceholder = document.querySelector("#camera-placeholder");
@@ -40,7 +39,10 @@ async function showBook(barcode) {
 
     if (!response.ok) {
       resultPanel.hidden = true;
-      setStatus(book.error || "Das Buch konnte nicht gefunden werden.", "error");
+      setStatus(
+        book.detail || book.error || "Das Buch konnte nicht gefunden werden.",
+        "error",
+      );
       return;
     }
 
