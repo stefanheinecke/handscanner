@@ -18,6 +18,11 @@ Beim ersten Start wird die Tabelle `books` erstellt und mit drei Beispielen
 befüllt. Vorhandene Datensätze werden nicht überschrieben. Bücher und Preise
 werden ausschliesslich in PostgreSQL gespeichert.
 
+Im Katalog zeigt die App zu jedem Buch auch einen scannbaren EAN-13-Barcode.
+Zum Testen öffnest du die Seite auf einem Computer und scannst den angezeigten
+Barcode mit dem Handy. Ein Handy kann nicht gleichzeitig seinen eigenen
+Bildschirm mit der eigenen Kamera scannen.
+
 Für den Kamerazugriff auf dem Handy muss die App über HTTPS geöffnet werden.
 Auf Railway wird HTTPS automatisch bereitgestellt. Zum lokalen Testen auf einem
 Handy braucht es ebenfalls eine HTTPS-Adresse; andernfalls kann der Barcode

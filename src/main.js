@@ -1,4 +1,5 @@
 import { BrowserMultiFormatReader } from "@zxing/browser";
+import JsBarcode from "jsbarcode";
 import "./style.css";
 
 const camera = document.querySelector("#camera");
@@ -71,14 +72,34 @@ async function loadCatalog() {
 
     for (const book of books) {
       const item = document.createElement("li");
+      item.className = "book-item";
+
+      const details = document.createElement("div");
+      details.className = "book-details";
       const title = document.createElement("span");
       const price = document.createElement("strong");
+      const barcodeLabel = document.createElement("span");
+      const barcodeSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       title.textContent = book.title;
+      title.className = "book-title";
       price.textContent = new Intl.NumberFormat("de-CH", {
         style: "currency",
         currency: book.currency,
       }).format(Number(book.price));
-      item.append(title, price);
+      barcodeLabel.textContent = `ISBN ${book.barcode}`;
+      barcodeLabel.className = "book-barcode-label";
+      barcodeSvg.setAttribute("role", "img");
+      barcodeSvg.setAttribute("aria-label", `Barcode für ISBN ${book.barcode}`);
+      JsBarcode(barcodeSvg, book.barcode, {
+        format: "EAN13",
+        width: 2,
+        height: 48,
+        displayValue: false,
+        margin: 0,
+      });
+
+      details.append(title, price);
+      item.append(details, barcodeSvg, barcodeLabel);
       bookList.append(item);
     }
   } catch (error) {
